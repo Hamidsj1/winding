@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رسم دیاگرام سیم‌پیچی موتور</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="سیم‌پیچی">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2A5FD1">
+<meta name="format-detection" content="telephone=no">
+
+<style>
+:root{--bg:#f4f6fa;--card:#fff;--tx:#14213d;--mut:#5b6b85;--bd:#d5dce8;--ac:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f172a;--card:#1e293b;--tx:#e8edf5;--mut:#9fb0c8;--bd:#334155;--ac:#60a5fa}}
+:root[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--tx:#e8edf5;--mut:#9fb0c8;--bd:#334155;--ac:#60a5fa}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Tahoma,Arial,sans-serif;line-height:1.8;padding:12px}
+h1{font-size:19px;margin:6px 0 10px}h3{font-size:15px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:12px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+label{font-size:13px;color:var(--mut);display:block}
+input,select{width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:16px;box-sizing:border-box}
+input[type=checkbox]{width:auto}
+button{padding:8px 12px;border:1px solid var(--ac);border-radius:8px;background:transparent;color:var(--ac);font-size:14px;cursor:pointer}
+button.p{background:var(--ac);color:#fff}
+.tags,.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}
+.tag{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:2px 10px;font-size:14px}
+.warn{color:#b45309;font-size:14px;margin-top:6px}
+.scroll{overflow-x:auto;max-width:100%;background:#fff;border-radius:8px}
+.tw{overflow:auto;max-height:300px}
+table{border-collapse:collapse;width:100%;font-size:14px;text-align:center}
+td,th{border:1px solid var(--bd);padding:3px 6px}
+.cn{font-size:14px;white-space:pre-line}.mut{font-size:13px;color:var(--mut)}
+@media print{.noprint{display:none!important}body{background:#fff;color:#000}.card{border:0}}
+
+.panel{display:none}.panel.on{display:block}
+body{padding-bottom:76px}
+#sum{margin-bottom:10px}
+#info{flex-wrap:nowrap;overflow-x:auto;margin-top:0;padding-bottom:4px}
+#info .tag{white-space:nowrap;flex:none}
+#sum .warn{margin-top:2px}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+#nav button{flex:1;border:0;border-radius:0;padding:13px 2px;font-size:13px;color:var(--mut);background:transparent}
+#nav button.on{color:var(--ac);font-weight:bold;box-shadow:inset 0 3px 0 var(--ac)}
+.colh{cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin:0}
+.colh::after{content:"▾";color:var(--mut);font-size:14px}
+.col.closed .colh::after{content:"◂"}
+.col .colb{margin-top:8px}
+.col.closed .colb{display:none}
+.row{margin-bottom:4px}
+.btns{margin-bottom:2px}
+@media print{.panel{display:block!important}.col.closed .colb{display:block!important}.colh::after{display:none}#nav{display:none!important}body{padding-bottom:12px}}
+
+#top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 -12px 6px;padding:4px 12px}
+#top h1{margin:0;font-size:16px}
+#top .ur{display:flex;gap:6px}
+#top button{padding:6px 10px;font-size:13px}
+button:disabled{opacity:.35}
+#nav button{font-size:12px;padding:13px 0}
+.ph{margin-bottom:10px}
+.ths{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.th{position:relative;width:84px;height:84px}
+.th img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--bd)}
+.th .x{position:absolute;top:-6px;left:-6px;padding:0;width:24px;height:24px;border-radius:12px;background:var(--card);line-height:1;font-size:12px}
+.ar{display:flex;gap:10px;border-bottom:1px solid var(--bd);padding:8px 0;align-items:flex-start}
+.aimg{width:64px;height:64px;border-radius:8px;object-fit:cover;background:var(--bg);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:26px;flex:none;color:var(--mut)}
+.am{flex:1;min-width:0}.am .mut{font-size:12px}
+#ar-q{margin-bottom:8px}
+#vw{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);display:none;overflow:auto;z-index:30;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#vw img{max-width:100%;max-height:100%;object-fit:contain;margin:auto}
+#vw img.big{max-width:none;max-height:none}
+#vw .c{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:8px;z-index:31;background:#000;color:#fff;border-color:#fff}
+.zw{flex:none}.zw>svg{display:block;width:100%;height:100%}
+.scroll{touch-action:pan-x pan-y}
+.zc{margin:6px 0}
+@media print{.zw{width:100%!important;height:auto!important}.zw>svg{height:auto}#top{position:static}}
+html{-webkit-text-size-adjust:100%}
+</style></head><body>
+<div id="top"><h1>رسم دیاگرام سیم‌پیچی موتور</h1><div class="ur noprint"><button id="bu" onclick="undo()" disabled>↶ برگشت</button><button id="br" onclick="redo()" disabled>↷ جلو</button></div></div>
+<div id="sum" class="noprint"><div class="tags" id="info"></div><div class="warn" id="warn"></div></div>
+<div class="card noprint" id="vbar" style="display:none">
+<div class="row">
+<div><label>نمایش فاز</label><select id="f"><option value="0">همه فازها</option><option value="1">فاز اول (U / M)</option><option value="2">فاز دوم (V / A)</option><option value="3">فاز سوم (W)</option></select></div>
+<div><label>حالت رسم</label><select id="m"><option value="a">خودکار</option><option value="m">دستی</option></select></div>
+</div>
+</div>
+
+<div class="panel on" id="p-main">
+<div class="card noprint">
+<div class="btns" style="margin:0 0 10px"><b class="mut">نمونه آماده:</b>
+<button onclick="pre(24,2,3,'con')">۲۴ شیار ۲ قطب هم‌مرکز</button><button onclick="pre(36,4,3,'lap')">۳۶ شیار ۴ قطب لپ</button><button onclick="pre(54,6,3,'con')">۵۴ شیار ۶ قطب هم‌مرکز</button><button onclick="pre(36,6,1,'con')">تک‌فاز ۳۶ شیار ۶ قطب</button></div>
+<div class="row">
+<div><label>نوع موتور</label><select id="t"><option value="3">سه‌فاز (U-V-W)</option><option value="1">تک‌فاز (اصلی M + کمکی A)</option></select></div>
+<div><label>نوع سیم‌پیچی</label><select id="w"><option value="lap">دولایه لپ (حلقوی)</option><option value="con">یک‌لایه هم‌مرکز</option><option value="chain">یک‌لایه زنجیره‌ای</option></select></div>
+<div><label>تعداد شیار (Z)</label><input id="z" type="number" value="24" min="6" max="96"></div>
+<div><label>تعداد قطب (P)</label><select id="p"><option selected>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option></select></div>
+<div><label>گام کلاف (فقط لپ؛ خالی = کامل)</label><input id="y" type="number" min="1" placeholder="خودکار"></div>
+<div><label>مسیر موازی (a)</label><input id="a" type="number" value="1" min="1"></div>
+</div>
+<div class="btns"><button class="p" onclick="showTab('flat')">مشاهده دیاگرام گسترده ←</button><button onclick="showTab('circ')">دیاگرام دایره‌ای</button></div>
+</div>
+</div>
+
+<div class="panel" id="p-flat">
+<div class="card"><h3>دیاگرام گسترده</h3>
+<div class="noprint"><div class="row">
+<div><label>شکل کلاف در دیاگرام گسترده</label><select id="s"><option value="semi">گرد (نیم‌دایره کامل)</option><option value="hex">شش‌ضلعی (کتابی)</option><option value="tri">مثلثی / لوزی</option><option value="round">گوشه گرد</option></select></div>
+<div><label>پیکان جهت جریان روی سیم</label><label style="display:flex;gap:6px;align-items:center;color:var(--tx)"><input id="arr" type="checkbox" checked> نمایش</label></div>
+</div></div>
+<div class="btns noprint" id="mrow" style="display:none"><select id="mp" style="width:auto"></select><button onclick="undoM()">برگشت</button><button onclick="clrM()">پاک کردن همه</button><button onclick="copyM()">کپی از خودکار</button><span class="mut">روی دو شیار بزنید تا بین آن‌ها کلاف اضافه شود.</span></div>
+<div class="btns noprint zc"><button onclick="zm('sv',-1)">−</button><b class="mut" id="zl-sv">۱۰۰٪</b><button onclick="zm('sv',1)">+</button><button onclick="zfit('sv')">متناسب با عرض</button><button onclick="zset('sv',1)">۱:۱</button><span class="mut">با دو انگشت هم می‌شود زوم کرد.</span></div>
+<div class="scroll" id="svgbox"></div>
+<div class="col closed"><div class="colh mut" role="button" onclick="tg(this)">راهنمای دیاگرام</div><div class="colb mut">هر کلاف جداگانه (به شکل انتخابی شما) رسم شده و پایه‌هایش دقیقاً روی شیار ورود و خروج است. کلاف‌های هم‌گام شکل و اندازه یکسان دارند (فقط چند پیکسل بالا و پایین می‌شوند تا خط‌ها روی هم نیفتند)؛ کلاف‌های با گام کوچک‌تر پایین‌ترند. ● شیار ورود و پیکان جهت جریان است. در لپ دو ضلع هر شیار در دو نیمه آن رسم شده. برچسب G تعداد کلاف و گام دسته است.</div></div>
+<div class="btns noprint"><button class="p" onclick="expPNG('sv')">ذخیره PNG</button><button onclick="expSVG('sv')">SVG</button><button class="p" onclick="expPDF()">ذخیره PDF (هر دو دیاگرام)</button><button onclick="expCSV()">جدول کلاف‌ها (CSV)</button><button onclick="expPrint()">چاپ / PDF</button></div></div>
+</div>
+
+<div class="panel" id="p-circ">
+<div class="card"><h3>دیاگرام دایره‌ای</h3>
+<div class="noprint"><div class="row">
+<div><label>انحنای کلاف‌ها (دایره‌ای)</label><select id="cv"><option value="1">بسیار گرد</option><option value="1.4">متوسط</option><option value="2.2" selected>کم‌گرد</option><option value="3.5">تقریباً صاف</option></select></div>
+<div><label>طول خط شعاعی ابتدا و انتهای قوس</label><select id="lg"><option value="10">کوتاه</option><option value="26" selected>متوسط</option><option value="42">بلند</option><option value="58">خیلی بلند</option></select></div>
+<div><label>مسیر داخلی کلاف‌ها (دایره‌ای)</label><label style="display:flex;gap:6px;align-items:center;color:var(--tx)"><input id="inr" type="checkbox"> نمایش</label></div>
+</div></div>
+<div class="btns noprint zc"><button onclick="zm('sv2',-1)">−</button><b class="mut" id="zl-sv2">۱۰۰٪</b><button onclick="zm('sv2',1)">+</button><button onclick="zfit('sv2')">متناسب با عرض</button><button onclick="zset('sv2',1)">۱:۱</button><span class="mut">با دو انگشت هم می‌شود زوم کرد.</span></div>
+<div class="scroll" id="cbox"></div>
+<div class="col closed"><div class="colh mut" role="button" onclick="tg(this)">راهنمای دیاگرام</div><div class="colb mut">هر کلاف از شیار ورود (●) با یک خط شعاعی به بیرون می‌رود و با یک قوس کاملاً بیرون حلقه شیارها (با فاصله از آن) به شیار خروج می‌رسد. هر فاز یک لایه شعاعی جدا دارد (فاز اول نزدیک‌تر به حلقه، بعد فاز دوم و سوم) تا فازها برجسته و جدا از هم دیده شوند؛ در هر لایه کلاف‌های هم‌پوشان در شعاع‌های کمی متفاوت می‌نشینند و کلاف‌های هم‌گام شکل یکسان دارند. قوس‌ها دور تا دور بیرون حلقه پخش‌اند. داخل دایره: ورودی و خروجی نهایی هر دسته کلاف (S = سر دسته، E = ته دسته) با خط عمود به شیار چسبیده و برچسب G1.S و G1.E دارد؛ سر و ته آزاد هر فاز (U1 و U2) درشت نوشته شده. خط‌چین رنگی بین دو دسته، سیم واسط است و نوعش (E–E ته به ته، S–S سر به سر، E–S ته به سر یعنی سری) روی آن نوشته شده. گردی قوس‌ها و طول خط شعاعی را از منوها تنظیم کنید. مسیر داخلی فقط با تیک نمایش داده می‌شود. برچسب G تعداد کلاف و گام دسته است.</div></div>
+<div class="btns noprint"><button class="p" onclick="expPNG('sv2')">ذخیره PNG</button><button onclick="expSVG('sv2')">SVG</button></div></div>
+</div>
+
+<div class="panel" id="p-tab">
+<div class="card col"><h3 class="colh" role="button" onclick="tg(this)">طرز اتصال گروه‌ها</h3><div class="colb"><div class="cn" id="conn"></div></div></div>
+<div class="card col"><h3 class="colh" role="button" onclick="tg(this)">محاسبات</h3><div class="colb"><div class="cn" id="calc"></div></div></div>
+<div class="card col"><h3 class="colh" role="button" onclick="tg(this)">جدول کلاف‌ها</h3><div class="colb"><div class="tw"><table id="ct"></table></div></div></div>
+</div>
+
+<div class="panel" id="p-plate">
+<div class="card" id="plate">
+<h3>مشخصات پلاک موتور</h3>
+<div id="photos">
+<div class="ph"><b class="mut">عکس پلاک</b>
+<div class="btns noprint"><button onclick="phAdd('plate','cam')">دوربین</button><button onclick="phAdd('plate','gal')">گالری</button></div>
+<div class="ths" id="th-plate"></div></div>
+<div class="ph"><b class="mut">عکس خود الکتروموتور</b>
+<div class="btns noprint"><button onclick="phAdd('motor','cam')">دوربین</button><button onclick="phAdd('motor','gal')">گالری</button></div>
+<div class="ths" id="th-motor"></div></div>
+</div>
+<div class="row" id="plf"></div>
+<div class="mut" id="pl-diag" style="margin-top:8px"></div>
+<div class="btns noprint">
+<button class="p" onclick="plSave()">ثبت در آرشیو</button>
+<button onclick="plNew()">فرم جدید</button>
+<button onclick="plCSV()">ذخیره فایل (CSV)</button>
+<button onclick="expPrint()">چاپ برگه</button>
+<span class="mut" id="pl-msg"></span>
+</div>
+<div class="mut noprint" id="pl-state" style="margin-top:6px"></div>
+</div>
+</div>
+
+<div class="panel" id="p-arch">
+<div class="card noprint"><h3>آرشیو موتورها <span class="mut" id="ar-n"></span></h3>
+<input id="ar-q" type="search" placeholder="جستجو: نام، مدل، سریال، سازنده، توضیحات…">
+<div id="pll"></div>
+<div class="btns"><button onclick="arCSV()">خروجی همهٔ آرشیو (CSV)</button></div>
+</div>
+</div>
+
+<div id="vw" class="noprint"><button class="c" onclick="document.getElementById('vw').style.display='none'">✕ بستن</button><img id="vw-i" alt="" onclick="this.classList.toggle('big')"></div>
+
+<nav id="nav" class="noprint">
+<button data-t="main" class="on" onclick="showTab('main')">مشخصات</button>
+<button data-t="flat" onclick="showTab('flat')">گسترده</button>
+<button data-t="circ" onclick="showTab('circ')">دایره‌ای</button>
+<button data-t="tab" onclick="showTab('tab')">جداول</button>
+<button data-t="plate" onclick="showTab('plate')">پلاک</button>
+<button data-t="arch" onclick="showTab('arch')">آرشیو</button>
+</nav>
+<script>
+const $=i=>document.getElementById(i),COL={U:'#dc2626',V:'#2563eb',W:'#16a34a',M:'#dc2626',A:'#2563eb',X:'#94a3b8'};
+const SEC3=[['U',1],['W',-1],['V',1],['U',-1],['W',1],['V',-1]],SEC1=[['M',1],['A',1],['M',-1],['A',-1]];
+let MC=[],sel=null,ROWS=[],AUTO=[];
+function pre(z,p,t,w){$('z').value=z;$('p').value=p;$('t').value=t;$('w').value=w;$('y').value='';$('m').value='a';build()}
+function undoM(){MC.pop();sel=null;build()}function clrM(){MC=[];sel=null;build()}
+function copyM(){MC=AUTO.map(c=>({ph:c.ph,a:c.a,b:c.b}));sel=null;build()}function delM(i){MC.splice(i,1);build()}
+function build(){
+ const Z=Math.round(+$('z').value),P=+$('p').value,t=$('t').value,w=$('w').value,A=Math.max(1,Math.round(+$('a').value)||1),sh=$('s').value,man=$('m').value==='m',ar=$('arr').checked;
+ const err=m=>{$('warn').textContent=m;['svgbox','cbox','ct','info'].forEach(i=>$(i).innerHTML='');$('conn').textContent='';$('calc').textContent=''};
+ if(!(Z>=6&&Z<=96))return err('تعداد شیار باید بین ۶ و ۹۶ باشد.');
+ $('mrow').style.display=man?'flex':'none';MC=MC.filter(c=>c.a<Z&&c.b<Z);
+ const sec=t==='3'?SEC3:SEC1,sw=360/sec.length,ang=(P/2)*360/Z,tau=Z/P,ph3=t==='3',nph=ph3?3:2,phs=ph3?['U','V','W']:['M','A'];
+ const mpv=$('mp').value;$('mp').innerHTML=phs.map(x=>`<option${x===mpv?' selected':''}>${x}</option>`).join('');
+ const f0=+$('f').value,fv=f0?phs[f0-1]||'all':'all';
+ const S=[];for(let s=0;s<Z;s++)S.push(sec[Math.floor(((s*ang+1e-6)%360)/sw)%sec.length]);
+ const same=(u,v)=>u[0]===v[0]&&u[1]===v[1];
+ let st=0;while(st<Z&&same(S[st],S[(st+Z-1)%Z]))st++;
+ if(st===Z)return err('با این مقادیر توزیع فاز ممکن نیست.');
+ const B=[],bo=[];
+ for(let k=0;k<Z;k++){const s=(st+k)%Z;if(k&&same(S[s],S[(s+Z-1)%Z]))B[B.length-1].sl.push(s);else B.push({ph:S[s][0],sg:S[s][1],sl:[s]});bo[s]=B.length-1}
+ let y=Math.round(+$('y').value)||Math.round(tau);y=Math.max(1,Math.min(y,Z-1));
+ let C=[];
+ if(w==='lap'){for(let s=0;s<Z;s++)C.push({ph:S[s][0],a:s,b:(s+y)%Z,g:bo[s]})}
+ else{const by={};B.forEach((b,i)=>(by[b.ph]=by[b.ph]||[]).push({b,i}));
+  for(const ph in by){const L=by[ph];if(L.length%2)return err('تعداد گروه‌های یک فاز فرد است؛ این ترکیب ممکن نیست.');
+   for(let k=0;k<L.length;k+=2){const X1=L[k].b.sl,X2=L[k+1].b.sl;if(X1.length!==X2.length)return err('گروه‌ها هم‌اندازه نیستند (q کسری)؛ یک‌لایه فقط برای q صحیح ممکن است.');
+    X1.forEach((s,i)=>C.push({ph,a:s,b:w==='con'?X2[X2.length-1-i]:X2[i],g:L[k].i}))}}}
+ AUTO=C;const q=Z/(P*nph);let wn='';
+ if(Z%(P*nph))wn+='q عدد صحیح نیست؛ توزیع تقریبی است. ';
+ if(ph3&&Z%3)wn+='Z بر ۳ بخش‌پذیر نیست؛ سیم‌پیچی متقارن نمی‌شود. ';
+ if(P%A)wn+='مسیر موازی باید مقسوم‌علیه تعداد قطب باشد. ';
+ if(man)wn+=sel===null?'':`شیار ${sel+1} انتخاب شد؛ شیار دوم را بزنید. `;
+ $('warn').textContent=wn;
+ const SC=S.map(v=>v[0]);
+ if(man){C=MC.map(c=>({...c,g:0}));SC.fill('X');MC.forEach(c=>{SC[c.a]=c.ph;SC[c.b]=c.ph})}
+ C.forEach(c=>c.wr=w==='lap'&&!man&&c.a>c.b);
+ const GR={};phs.forEach(p=>GR[p]=[]);
+ if(!man)C.forEach(c=>{const L=GR[c.ph];let G=L.find(x=>x.g===c.g);if(!G)L.push(G={g:c.g,cs:[]});G.cs.push(c)});
+ phs.forEach(p=>GR[p].sort((u,v)=>u.g-v.g));
+ if(!man)phs.forEach(p=>GR[p].forEach((o,i)=>{const rv=w==='lap'&&i%2===1;o.cs.sort((u,v)=>u.a-v.a);o.cs.forEach(c=>{c.st=rv?c.b:c.a;c.en=rv?c.a:c.b});if(rv)o.cs.reverse();o.gs=o.cs[0].st;o.ge=o.cs[o.cs.length-1].en}));
+ if(man)C.forEach(c=>{c.st=c.a;c.en=c.b});
+ const vis=C.filter(c=>fv==='all'||fv===c.ph),vp=phs.filter(p=>fv==='all'||fv===p);
+ $('info').innerHTML=[`q = ${+q.toFixed(2)}`,`گام قطبی = ${+tau.toFixed(2)} شیار`,`زاویه هر شیار = ${+ang.toFixed(2)}°`,`تعداد کلاف = ${C.length}`,man?'حالت دستی':(w==='lap'?`گام کلاف = ${y}`:'گروه هم‌مرکز')].map(x=>`<span class="tag">${x}</span>`).join('');
+ // ---- groups: one line per coil group
+ const sd=(x,y)=>((x-y+Z+Z/2)%Z)-Z/2,GL=[],mn=a=>a.reduce((p,q)=>p+q,0)/a.length;
+ const dd=(c,rv)=>w==='lap'&&!man?(rv?-(((c.st-c.en)%Z+Z)%Z):((c.en-c.st)%Z+Z)%Z):c.en-c.st;
+ const mkg=(ph,i,cs,rv)=>{const s0=cs[0].st;let su=cs.map(c=>s0+sd(c.st,s0)),eu=cs.map((c,j)=>su[j]+dd(c,rv));const fl=Math.floor(mn(su)/Z)*Z;su=su.map(v=>v-fl);eu=eu.map(v=>v-fl);return{ph,i,cs,su,eu,xs:mn(su),xe:mn(eu),n:cs.length,p:Math.round(Math.abs(mn(eu)-mn(su)))}};
+ if(man)C.forEach((c,i)=>GL.push(mkg(c.ph,i,[c])));else phs.forEach(ph=>GR[ph].forEach((o,i)=>{o.gl=mkg(ph,i,o.cs,w==='lap'&&i%2===1);GL.push(o.gl)}));
+ const gv=GL.filter(g=>fv==='all'||fv===g.ph),LS=13,lanes=[],KL=[],off=w==='lap'&&!man?5:0;
+ gv.forEach(g=>g.cs.forEach((c,j)=>KL.push({g,c,us:g.su[j],ue:g.eu[j]})));
+ {const cl={};KL.forEach(k=>{const key=Math.round(Math.abs(k.ue-k.us)*2)/2;(cl[key]=cl[key]||[]).push(k)});
+  let hb=24;Object.keys(cl).map(Number).sort((p,q)=>p-q).forEach(key=>{const sub=[];cl[key].sort((p,q)=>p.us-q.us).forEach(k=>{k.lo=Math.min(k.us,k.ue)-.45;k.hi=Math.max(k.us,k.ue)+.45;for(let l=0;;l++){const S2=sub[l]||(sub[l]=[]);if(!S2.some(o=>!(o.hi<k.lo||o.lo>k.hi))){S2.push(k);k.h=hb+l*4;break}}});hb+=(sub.length-1)*4+16})}
+ const gl=g=>man?`${g.cs[0].st+1}→${g.cs[0].en+1}`:`G${g.i+1} ×${g.n} · گام ${g.p}`;
+ // ---- developed: every coil drawn separately, own height
+ const nc=man?0:vp.reduce((t,p)=>t+Math.max(0,GR[p].length-1),0),cw=30,x0=44,hOf=k=>sh==='semi'?Math.abs(k.ue-k.us)*cw/2:k.h,mhh=Math.max(20,...KL.map(hOf))+22,base=34+mhh+22,by=base,yt=base+cw,Wd=Z*cw+2*x0,Ht=yt+24+nc*7+70,X=u=>x0+u*cw+cw/2,wr=u=>u>=Z-.5?u-Z:u<-.5?u+Z:u;
+ const sdv=(c,st)=>off*((st?c.st:c.en)===c.a?-1:1);
+ const half=(xa,xb,h)=>{const yy=by-h,k=by-h*.55,r=(xb-xa)/2,s=Math.min(h*.6,(xb-xa)*.25);
+  if(sh==='semi')return `M${xa},${by} A${r},${r} 0 0 1 ${xb},${by}`;
+  if(sh==='tri')return `M${xa},${by} L${(xa+xb)/2},${yy} L${xb},${by}`;
+  if(sh==='round'){const qq=Math.min(16,r/1.5);return `M${xa},${by} V${yy+qq} Q${xa},${yy} ${xa+qq},${yy} H${xb-qq} Q${xb},${yy} ${xb},${yy+qq} V${by}`}
+  return `M${xa},${by} V${k} L${xa+s},${yy} H${xb-s} L${xb},${k} V${by}`};
+ const dc=(k,sf)=>{const c=k.c,col=COL[c.ph],xs=X(k.us+sf)+sdv(c,1),xe=X(k.ue+sf)+sdv(c,0),h=hOf(k),xa=Math.min(xs,xe),xb=Math.max(xs,xe),dr=k.ue>=k.us?1:-1,mid=(xa+xb)/2;
+  let o=`<path d="${half(xa,xb,h)}" fill="none" stroke="${col}" stroke-width="1.8"/><circle cx="${xs}" cy="${by-6}" r="3.3" fill="${col}"/>`;
+  if(ar)o+=`<path d="M${mid+7*dr},${by-h} L${mid-5*dr},${by-h-5} L${mid-5*dr},${by-h+5}Z" fill="${col}"/>`;return o};
+ let g=`<svg id="sv" xmlns="http://www.w3.org/2000/svg" width="${Wd}" height="${Ht}" viewBox="0 0 ${Wd} ${Ht}" style="display:block"><rect width="${Wd}" height="${Ht}" fill="#fff"/><g style="pointer-events:none">`;
+ for(let j=0;j<P;j++)g+=`<text x="${X((j+.5)*tau-.5)}" y="22" text-anchor="middle" font-size="17" font-weight="bold" fill="#7c3aed" font-family="Arial">${j%2?'S':'N'}</text>`;
+ KL.forEach(k=>{g+=dc(k,0);if(Math.min(k.us,k.ue)<-.5)g+=dc(k,Z);if(Math.max(k.us,k.ue)>Z-.5)g+=dc(k,-Z)});
+ if(!man)gv.forEach(gg=>{let ko=null;KL.forEach(k=>{if(k.g===gg&&(!ko||Math.abs(k.ue-k.us)>Math.abs(ko.ue-ko.us)))ko=k});if(ko)g+=`<text x="${X(wr((ko.us+ko.ue)/2))}" y="${by-hOf(ko)-7}" text-anchor="middle" font-size="10" font-weight="bold" fill="${COL[gg.ph]}" style="direction:ltr;unicode-bidi:embed">${gl(gg)}</text>`});
+ g+='</g>';
+ for(let k=0;k<Z;k++){const c=COL[SC[k]];g+=`<rect data-s="${k}" x="${X(k)-cw/2}" y="${base}" width="${cw}" height="${cw}" fill="${c}" fill-opacity=".2" stroke="${sel===k?'#000':'#475569'}" stroke-width="${sel===k?3:1}" style="cursor:pointer"/><text style="pointer-events:none" x="${X(k)}" y="${base+cw/2+4}" text-anchor="middle" font-size="13" font-weight="bold" fill="#000" font-family="Arial">${k+1}</text>`}
+ const lp=(gp,st)=>{const n=gp.cs.length,c=st?gp.cs[0]:gp.cs[n-1],u=st?gp.su[0]:gp.eu[n-1];return X(wr(u))+sdv(c,st)};
+ let kk=0;
+ if(!man)vp.forEach(ph=>{const G=GR[ph],c=COL[ph];if(!G.length)return;
+  for(let i=0;i+1<G.length;i++){const yl=yt+14+(kk++)*7;g+=`<path d="M${lp(G[i].gl,0)},${yt} V${yl} H${lp(G[i+1].gl,1)} V${yt}" fill="none" stroke="${c}" stroke-width="1.6"/>`}
+  const a1=G[0].gl,b1=G[G.length-1].gl;[[lp(a1,1),ph+'1'],...(A===1?[[lp(b1,0),ph+'2']]:[])].forEach(([x,tx])=>{g+=`<path d="M${x},${yt} V${Ht-30}" stroke="${c}" stroke-width="2.5"/><text x="${x}" y="${Ht-12}" text-anchor="middle" font-size="15" font-weight="bold" fill="${c}" font-family="Arial">${tx}</text>`})});
+ $('svgbox').innerHTML=g+'</svg>';
+ // ---- circular: coils outside the ring, balanced around it, one radial band per phase
+ {let cx=0,cy=0,SZ=0;const R=190,ag=u=>(-90+(u+.5)*360/Z)*Math.PI/180,pt=(a,r)=>[cx+r*Math.cos(a),cy+r*Math.sin(a)],rs=Math.min(15,Math.max(5,R*Math.PI/Z*.9));
+  const mf=+$('cv').value,inr=$('inr').checked,Lo=R+rs+(+$('lg').value),ST=7,LOF=w==='lap'&&!man?.14:0;
+  const ph2=k=>{let u1=k.c.a,u2=k.c.b,sw=0;if((((u2-u1)%Z)+Z)%Z>Z/2){[u1,u2]=[u2,u1];sw=1}return{u1,u2,sw,f:(((u2-u1)%Z)+Z)%Z}};
+  const mkc=(k,r0,m)=>{const P=ph2(k),a1=ag(P.u1+LOF*(P.sw?1:-1)),a2=ag(P.u2+LOF*(P.sw?-1:1)),[x1,y1]=pt(a1,r0),[x2,y2]=pt(a2,r0),cl=Math.hypot(x2-x1,y2-y1),rr0=Math.max(cl/2*m,1),sn=rr0-Math.sqrt(Math.max(0,rr0*rr0-cl*cl/4)),sg=Math.max(sn,r0*(1-Math.cos(P.f*Math.PI/Z))+20),rr=(cl*cl/4+sg*sg)/(2*sg),mxx=(x1+x2)/2,myy=(y1+y2)/2,L=Math.hypot(mxx-cx,myy-cy);let ux,uy;if(L>1e-3){ux=(mxx-cx)/L;uy=(myy-cy)/L}else{ux=(y2-y1)/cl;uy=-(x2-x1)/cl}
+   const fw=(k.c.st===k.c.a)!==(P.sw===1);return{P,a1,a2,x1,y1,x2,y2,d:`A${rr},${rr} 0 ${sg>cl/2?1:0} 1 ${x2},${y2}`,px:mxx+ux*sg,py:myy+uy*sg,ux,uy,dir:Math.atan2(y2-y1,x2-x1)+(fw?0:Math.PI)}};
+  const iv=KL.map(k=>{const P=ph2(k);return{k,lo:P.u1,hi:P.u1+P.f}}),ov=(p,q)=>[-Z,0,Z].some(t=>!(p.hi<q.lo+t-.6||p.lo>q.hi+t+.6)),bs={};let acc=0;
+  phs.forEach(ph=>{const mine=iv.filter(i=>i.k.c.ph===ph);if(!mine.length)return;const lc=[];mine.forEach(p=>{for(let l=0;;l++){const L=lc[l]||(lc[l]=[]);if(!L.some(o=>ov(o,p))){L.push(p);p.k.cl=l;break}}});bs[ph]=acc;acc+=(lc.length+1)*ST});
+  const r0=k=>Lo+bs[k.c.ph]+k.cl*ST,mxr=Math.max(R+rs+80,...KL.map(k=>{const O=mkc(k,r0(k),mf);return Math.hypot(O.px,O.py)+34}));
+  SZ=Math.ceil(mxr*2);cx=cy=SZ/2;
+  let h=`<svg id="sv2" xmlns="http://www.w3.org/2000/svg" width="${SZ}" height="${SZ}" viewBox="0 0 ${SZ} ${SZ}" style="display:block;margin:auto;max-width:100%;height:auto"><rect width="${SZ}" height="${SZ}" fill="#fff"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#cbd5e1"/>`;
+  KL.forEach(k=>{const c=COL[k.c.ph],O=mkc(k,r0(k),mf),[s1x,s1y]=pt(O.a1,R+rs),[s2x,s2y]=pt(O.a2,R+rs);
+   h+=`<path d="M${s1x},${s1y} L${O.x1},${O.y1} ${O.d} L${s2x},${s2y}" fill="none" stroke="${c}" stroke-width="2.2"/>`;
+   if(inr){const Ri=Math.max(34,R-rs-14-k.cl*5),[t1x,t1y]=pt(O.a1,R-rs),[t2x,t2y]=pt(O.a2,R-rs),[i1x,i1y]=pt(O.a1,Ri),[i2x,i2y]=pt(O.a2,Ri);h+=`<path d="M${t1x},${t1y} L${i1x},${i1y} A${Ri},${Ri} 0 0 1 ${i2x},${i2y} L${t2x},${t2y}" fill="none" stroke="${c}" stroke-width="1.2" opacity=".75"/>`}
+   const[dx,dy]=pt(ag(k.c.st+LOF*(k.c.st===k.c.a?-1:1)),R+rs+6);h+=`<path d="M6,0 L-4,-5 L-4,5Z" transform="translate(${O.px},${O.py}) rotate(${O.dir*180/Math.PI})" fill="${c}"/><circle cx="${dx}" cy="${dy}" r="3" fill="${c}"/>`});
+  if(!man)gv.forEach(o=>{let ko=null;KL.forEach(k=>{if(k.g===o&&(!ko||Math.abs(k.ue-k.us)>Math.abs(ko.ue-ko.us)))ko=k});if(!ko)return;const O=mkc(ko,r0(ko),mf);h+=`<text x="${O.px+O.ux*14}" y="${O.py+O.uy*14+4}" text-anchor="middle" style="direction:ltr;unicode-bidi:embed" font-size="10" font-weight="bold" fill="${COL[o.ph]}">${gl(o)}</text>`});
+  for(let k=0;k<Z;k++){const[x,y]=pt(ag(k),R);h+=`<circle cx="${x}" cy="${y}" r="${rs}" fill="${COL[SC[k]]}" stroke="#000" stroke-width="2"/>`+(rs>=7?`<text x="${x}" y="${y+rs*.36}" text-anchor="middle" font-size="${rs*1.05}" font-weight="bold" fill="#000" stroke="#fff" stroke-width="2.4" paint-order="stroke" font-family="Arial">${k+1}</text>`:'')}
+  if(!man)vp.forEach(ph=>{const G=GR[ph],n=G.length;if(!n)return;const pi=phs.indexOf(ph),c=COL[ph],rl=R-46-pi*26,TP=2*Math.PI;
+   G.forEach((o,i)=>{const rv=w==='lap'&&i%2===1,c0=o.cs[0],cL=o.cs[o.cs.length-1],e0=LOF*(c0.st===c0.a?-1:1),eL=LOF*(cL.en===cL.a?-1:1);o.l0=ag(c0.st+e0);o.l1=ag(cL.en+eL);o.t0=rv?'E':'S';o.t1=rv?'S':'E';
+    [[o.l0,o.t0,i===0?ph+'1':''],[o.l1,o.t1,i===n-1&&A===1?ph+'2':'']].forEach(([an,t,fr])=>{const[x1,y1]=pt(an,R-rs),[x2,y2]=pt(an,rl),[x3,y3]=pt(an,rl-14);h+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="2.4"/><circle cx="${x2}" cy="${y2}" r="3.8" fill="${c}"/><text x="${x3}" y="${y3+4}" text-anchor="middle" style="direction:ltr;unicode-bidi:embed" font-size="${fr?14:9.5}" font-weight="bold" fill="${c}">${fr||('G'+(i+1)+'.'+t)}</text>`})});
+   for(let i=0;i+1<n;i++){const a=G[i].l1,b=G[i+1].l0,rw=rl-14-(i%2)*8,df=((b-a)%TP+TP)%TP,sh1=df<=Math.PI,[x1,y1]=pt(a,rl),[xa,ya]=pt(a,rw),[xb,yb]=pt(b,rw),[x2,y2]=pt(b,rl),am=a+(sh1?df/2:-(TP-df)/2),[lx,ly]=pt(am,rw-9);
+    h+=`<path d="M${x1},${y1} L${xa},${ya} A${rw},${rw} 0 0 ${sh1?1:0} ${xb},${yb} L${x2},${y2}" fill="none" stroke="${c}" stroke-width="1.8" stroke-dasharray="6 3"/><text x="${lx}" y="${ly+3}" text-anchor="middle" style="direction:ltr;unicode-bidi:embed" font-size="9" font-weight="bold" fill="${c}">${G[i].t1}–${G[i+1].t0}</text>`}});
+  $('cbox').innerHTML=h+'</svg>'}
+
+ // ---- text
+ const cn=[];
+ if(man)cn.push('در حالت دستی، اتصال گروه‌ها را خودتان مشخص می‌کنید.');
+ else vp.forEach(ph=>{const G=GR[ph],n=G.length;if(!n)return;let tx=`فاز ${ph}:\n`+G.map((o,i)=>`G${i+1}: `+(w==='lap'?'شیار '+B[o.g].sl.map(x=>x+1).join('،'):'کلاف‌ها '+o.cs.map(c=>`(${c.a+1}–${c.b+1})`).join(' '))).join('\n')+'\n';
+  if(A>1&&P%A===0)tx+=`گروه‌ها را به ${A} دسته تقسیم و هر دسته را سری ببندید؛ ابتدای دسته‌ها به ${ph}1 و انتهای آن‌ها به ${ph}2.\n`;
+  else if(w==='lap'){tx+=`ابتدای G1 = ${ph}1\n`;for(let i=1;i<n;i++)tx+=i%2?`انتهای G${i} به انتهای G${i+1}\n`:`ابتدای G${i} به ابتدای G${i+1}\n`;tx+=`ابتدای G${n} = ${ph}2\n`}
+  else{tx+=`ابتدای G1 = ${ph}1\n`;for(let i=1;i<n;i++)tx+=`انتهای G${i} به ابتدای G${i+1}\n`;tx+=`انتهای G${n} = ${ph}2\n(گروه‌ها هم‌جهت‌اند؛ قطب‌های دیگر به‌صورت قطب القایی ساخته می‌شوند.)\n`}
+  cn.push(tx)});
+ $('conn').textContent=cn.join('\n')||'—';
+ $('calc').textContent=[`گام قطبی: Y = Z / P = ${Z} / ${P} = ${+tau.toFixed(2)} شیار`,`q = Z / (m × P) = ${Z} / (${nph} × ${P}) = ${+q.toFixed(2)}`,`زاویه الکتریکی هر شیار: α = 360 × p / Z = 360 × ${P/2} / ${Z} = ${+ang.toFixed(2)}°`,ph3?`فاصله شروع فازها: 120 / α = ${+(120/ang).toFixed(2)} شیار`:`فاصله شروع سیم‌پیچ کمکی: 90 / α = ${+(90/ang).toFixed(2)} شیار`,`سرعت سنکرون در ۵۰ هرتز: 120 × 50 / P = ${6000/P} دور بر دقیقه`].join('\n');
+ ROWS=[['#','فاز','سر (شیار)','ته (شیار)',man?'حذف':'گروه']].concat(C.map((c,i)=>[i+1,c.ph,c.st+1,c.en+1,man?`<button onclick="delM(${i})">×</button>`:'G'+(GR[c.ph].findIndex(o=>o.g===c.g)+1)]));
+ $('ct').innerHTML=ROWS.map((r,i)=>'<tr>'+r.map(v=>i?`<td>${v}</td>`:`<th>${v}</th>`).join('')+'</tr>').join('');
+}
+$('svgbox').addEventListener('click',e=>{if($('m').value!=='m')return;const s=e.target.getAttribute&&e.target.getAttribute('data-s');if(s===null)return;const k=+s;if(sel===null)sel=k;else{if(k!==sel)MC.push({ph:$('mp').value,a:sel,b:k});sel=null}build()});
+function dl(name,mime,data,b64){const b=b64?data:btoa(unescape(encodeURIComponent(data)));
+ if(window.Android){Android.save(name,mime,b);return}
+ const bin=atob(b),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+ const f=new File([u],name,{type:mime});
+ const down=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),1000)};
+ if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]}).catch(e=>{if(!e||e.name!=='AbortError')down()});
+ else down()}
+const svgStr=id=>new XMLSerializer().serializeToString($(id));
+function expSVG(id){dl('winding.svg','image/svg+xml',svgStr(id))}
+function expPNG(id){const sv=$(id),W=+sv.getAttribute('width'),H=+sv.getAttribute('height'),im=new Image();
+ im.onload=()=>{const c=document.createElement('canvas');c.width=W*2;c.height=H*2;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);dl('winding.png','image/png',c.toDataURL('image/png').split(',')[1],true)};
+ im.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svgStr(id))))}
+function b64(u){let t='';for(let i=0;i<u.length;i+=8192)t+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(t)}
+function svgCv(id,sc){return new Promise(r=>{const sv=$(id),W=+sv.getAttribute('width'),H=+sv.getAttribute('height'),im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=Math.round(W*sc);c.height=Math.round(H*sc);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);r({c,W,H})};im.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svgStr(id))))})}
+function pdfBuild(pg){const enc=new TextEncoder(),parts=[],offs=[];let len=0;const add=x=>{const b=typeof x==='string'?enc.encode(x):x;parts.push(b);len+=b.length};
+ const obj=(n,body)=>{offs[n]=len;add(`${n} 0 obj\n${body}\nendobj\n`)};
+ add('%PDF-1.4\n');obj(1,'<< /Type /Catalog /Pages 2 0 R >>');obj(2,`<< /Type /Pages /Kids [${pg.map((p,i)=>`${3+i*3} 0 R`).join(' ')}] /Count ${pg.length} >>`);
+ pg.forEach((p,i)=>{const b=3+i*3,cs=`q ${p.w} 0 0 ${p.h} 0 0 cm /Im${i} Do Q`;
+  obj(b,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${p.w} ${p.h}] /Resources << /XObject << /Im${i} ${b+2} 0 R >> >> /Contents ${b+1} 0 R >>`);
+  obj(b+1,`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`);
+  offs[b+2]=len;add(`${b+2} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${p.iw} /Height ${p.ih} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpg.length} >>\nstream\n`);add(p.jpg);add('\nendstream\nendobj\n')});
+ const xo=len,tot=3+pg.length*3;let x=`xref\n0 ${tot}\n0000000000 65535 f \n`;for(let i=1;i<tot;i++)x+=String(offs[i]).padStart(10,'0')+' 00000 n \n';
+ add(x+`trailer\n<< /Size ${tot} /Root 1 0 R >>\nstartxref\n${xo}\n%%EOF`);const out=new Uint8Array(len);let o=0;parts.forEach(b=>{out.set(b,o);o+=b.length});return out}
+async function expPDF(){const pg=[];for(const id of['sv','sv2']){if(!$(id))continue;const{c,W,H}=await svgCv(id,1.5),bin=atob(c.toDataURL('image/jpeg',.92).split(',')[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);pg.push({w:+(W*.75).toFixed(1),h:+(H*.75).toFixed(1),iw:c.width,ih:c.height,jpg:u})}
+ if(pg.length)dl('winding.pdf','application/pdf',b64(pdfBuild(pg)),true)}
+function expCSV(){dl('coils.csv','text/csv','\ufeff'+ROWS.map(r=>r.map(v=>String(v).startsWith('<')?'':v).join(',')).join('\n'))}
+function expPrint(){window.Android?Android.print():window.print()}
+['t','w','z','p','y','a','s','f','m','arr','inr','cv','lg'].forEach(i=>$(i).addEventListener('input',()=>{if(i!=='s'&&i!=='f'&&i!=='arr'&&i!=='inr'&&i!=='cv'&&i!=='lg'){sel=null}build()}));build();
+</script><script>
+(function(){
+const KEY='winding_records_v1',DKEY='winding_draft_v1';
+const F=[
+['name','نام / مشتری','t'],['maker','سازنده','t'],['model','مدل (تیپ)','t'],['serial','شماره سریال','t'],['year','سال ساخت','t'],['frame','فریم (مثلاً ۱۳۲)','t'],
+['kw','توان (kW)','n'],['hp','توان (HP)','n'],['volt','ولتاژ (V)','t'],['conn','اتصال روی پلاک','s',['','ستاره','مثلث','ستاره / مثلث']],
+['amp','جریان (A)','t'],['rpm','دور (rpm)','n'],['hz','فرکانس (Hz)','n'],['cos','ضریب توان','n'],
+['cls','کلاس عایق','s',['','B','F','H']],['ip','IP','t'],['duty','نوع کار (S1…)','t'],['kg','وزن (kg)','n'],
+['wire','قطر سیم (mm)','n'],['strands','تعداد رشته سیم','n'],['turns','دور هر کلاف','n']
+];
+const DG=['t','w','z','p','y','a'],ALL=['t','w','z','p','y','a','s','f','m','arr','cv','lg','inr'];
+let cur=null,delId=null,PHL=[],applying=false;
+const box=$('plf');
+F.forEach(f=>{
+ const d=document.createElement('div'),l=document.createElement('label');l.textContent=f[1];d.appendChild(l);
+ let e;
+ if(f[2]==='s'){e=document.createElement('select');f[3].forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o||'—';e.appendChild(op)})}
+ else{e=document.createElement('input');e.type='text';if(f[2]==='n')e.setAttribute('inputmode','decimal')}
+ e.id='pl_'+f[0];d.appendChild(e);box.appendChild(d);
+});
+{const d=document.createElement('div');d.style.gridColumn='1/-1';
+ d.innerHTML='<label>توضیحات (وضعیت موتور، ایراد، نکته‌های بازپیچی)</label>';
+ const t=document.createElement('textarea');t.id='pl_note';t.rows=3;
+ t.style.cssText='width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:16px;box-sizing:border-box;font-family:inherit';
+ d.appendChild(t);box.appendChild(d)}
+$('pl_hz').value='50';
+function vals(){const o={};F.forEach(f=>o[f[0]]=$('pl_'+f[0]).value.trim());o.note=$('pl_note').value.trim();return o}
+function fill(o){F.forEach(f=>$('pl_'+f[0]).value=(o&&o[f[0]])||'');$('pl_note').value=(o&&o.note)||''}
+function dg(){const o={};ALL.forEach(i=>{const e=$(i);o[i]=e.type==='checkbox'?e.checked:e.value});return o}
+function setDG(d){ALL.forEach(i=>{if(d&&d[i]!==undefined){const e=$(i);if(e.type==='checkbox')e.checked=!!d[i];else e.value=d[i]}})}
+function mcs(){return MC.map(c=>({ph:c.ph,a:c.a,b:c.b}))}
+function diag(){const t=$('t').value==='3'?'سه‌فاز':'تک‌فاز',w=$('w').options[$('w').selectedIndex].text;
+ $('pl-diag').textContent='دیاگرام: '+t+'، '+$('z').value+' شیار، '+$('p').value+' قطب، '+w+(+$('a').value>1?'، '+$('a').value+' مسیر':'، ۱ مسیر')+($('y').value?'، گام '+$('y').value:'')}
+DG.forEach(i=>$(i).addEventListener('input',diag));diag();
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function store(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true}catch(e){return false}}
+function msg(m){$('pl-msg').textContent=m;setTimeout(()=>{$('pl-msg').textContent=''},4000)}
+
+/* ---------- عکس‌ها ---------- */
+const hasA=()=>window.Android&&typeof Android.pick==='function';
+const REQ={};window.onPhoto=(r,id)=>{const f=REQ[r];delete REQ[r];if(f&&id)f(id)};
+function lsGet(k){try{return localStorage.getItem(k)||''}catch(e){return ''}}
+function toJpeg(im,max,q){const m=Math.max(im.width,im.height),r=m>max?max/m:1,c=document.createElement('canvas');c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext('2d').drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q)}
+let _db=null;
+function idb(){return _db||(_db=new Promise((res,rej)=>{try{const r=indexedDB.open('winding_ph',1);r.onupgradeneeded=()=>r.result.createObjectStore('ph');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}))}
+function idbPut(k,v){return idb().then(d=>new Promise((res,rej)=>{const t=d.transaction('ph','readwrite');t.objectStore('ph').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)}))}
+function idbGet(k){return idb().then(d=>new Promise((res,rej)=>{const r=d.transaction('ph').objectStore('ph').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))}
+function idbDel(k){return idb().then(d=>new Promise((res,rej)=>{const t=d.transaction('ph','readwrite');t.objectStore('ph').delete(k);t.oncomplete=res;t.onerror=()=>rej(t.error)}))}
+function idbKeys(){return idb().then(d=>new Promise((res,rej)=>{const r=d.transaction('ph').objectStore('ph').getAllKeys();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))}
+function idbThumbs(){return idb().then(d=>new Promise((res,rej)=>{const o={},r=d.transaction('ph').objectStore('ph').openCursor(IDBKeyRange.bound('t','u'));r.onsuccess=()=>{const c=r.result;if(c){o[c.key.slice(1)]=c.value;c.continue()}else res(o)};r.onerror=()=>rej(r.error)}))}
+const FC={};
+function webPick(src,cb){const i=document.createElement('input');i.type='file';i.accept='image/*';if(src==='cam')i.setAttribute('capture','environment');
+ i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{try{const id='p'+Date.now(),full=toJpeg(im,1280,.82),th=toJpeg(im,280,.75);TC[id]=th;FC[id]=full;
+    idbPut('t'+id,th).then(()=>idbPut('f'+id,full)).catch(()=>msg('ذخیرهٔ عکس روی این دستگاه ممکن نشد'));cb(id)}catch(e){msg('تصویر پردازش نشد')}URL.revokeObjectURL(u)};
+  im.onerror=()=>{msg('تصویر خوانده نشد');URL.revokeObjectURL(u)};im.src=u};i.click()}
+window.phAdd=function(k,src){const cb=id=>{PHL.push({id:id,k:k});renderPh();chk(0)};
+ if(hasA()){const r='r'+Date.now();REQ[r]=cb;Android.pick(src,r)}else webPick(src,cb)};
+const TC={};
+function psrc(id,th){if(hasA()){const key=id+(th?'t':'f');if(th&&TC[key])return TC[key];const b=Android.photo(id,!!th),s=b?'data:image/jpeg;base64,'+b:'';if(th&&s)TC[key]=s;return s}
+ return th?(TC[id]||lsGet('wpt_'+id)):(FC[id]||lsGet('wph_'+id))}
+async function showImg(id){let s=psrc(id,false);if(!s&&!hasA()){try{s=await idbGet('f'+id)||''}catch(e){}}if(!s)s=psrc(id,true);if(!s)return;const im=$('vw-i');im.classList.remove('big');im.src=s;$('vw').style.display='flex'}
+function renderPh(){['plate','motor'].forEach(k=>{const c=$('th-'+k);c.innerHTML='';
+ PHL.filter(p=>p.k===k).forEach(p=>{const d=document.createElement('div');d.className='th';
+  const im=document.createElement('img');im.src=psrc(p.id,true);im.onclick=()=>showImg(p.id);
+  const x=document.createElement('button');x.className='x noprint';x.textContent='✕';x.onclick=()=>{PHL=PHL.filter(q=>q!==p);renderPh();chk(0)};
+  d.appendChild(im);d.appendChild(x);c.appendChild(d)});
+ if(!c.children.length){const m=document.createElement('span');m.className='mut';m.textContent='عکسی ثبت نشده';c.appendChild(m)}})}
+
+/* ---------- آرشیو ---------- */
+function renderAr(){
+ const L=$('pll'),q=($('ar-q').value||'').trim().toLowerCase();L.innerHTML='';
+ const all=load().slice().sort((x,y)=>y.ts-x.ts);$('ar-n').textContent=all.length?'('+all.length+')':'';
+ const a=q?all.filter(r=>[r.f.name,r.f.maker,r.f.model,r.f.serial,r.f.note,r.f.kw,r.f.rpm,r.f.volt].join(' ').toLowerCase().includes(q)):all;
+ if(!a.length){const m=document.createElement('div');m.className='mut';m.textContent=all.length?'موردی پیدا نشد.':'هنوز چیزی در آرشیو نیست. از تب «پلاک» گزینهٔ «ثبت در آرشیو» را بزنید.';L.appendChild(m);return}
+ a.forEach(r=>{
+  const row=document.createElement('div');row.className='ar';
+  const ph=(r.ph||[]).find(p=>p.k==='motor')||(r.ph||[])[0];
+  let im;if(ph){im=document.createElement('img');im.src=psrc(ph.id,true);im.onclick=()=>showImg(ph.id)}else{im=document.createElement('div');im.textContent='⚙'}
+  im.className='aimg';
+  const mid=document.createElement('div');mid.className='am';
+  const t=document.createElement('b');t.textContent=r.f.name||r.f.model||'بدون نام';
+  const l1=document.createElement('div');l1.className='mut';
+  l1.textContent=[r.f.maker,r.f.model&&r.f.name?r.f.model:'',r.f.kw&&r.f.kw+' kW',r.f.rpm&&r.f.rpm+' rpm',r.f.volt&&r.f.volt+' V',r.f.amp&&r.f.amp+' A'].filter(Boolean).join(' · ');
+  const d=r.d||{},l2=document.createElement('div');l2.className='mut';
+  l2.textContent=(d.t?(d.t==='3'?'سه‌فاز':'تک‌فاز')+'، '+d.z+' شیار، '+d.p+' قطب':'')+'  •  '+new Date(r.ts).toLocaleDateString('fa-IR')+((r.ph||[]).length?'  •  '+(r.ph||[]).length+' عکس':'');
+  const bt=document.createElement('div');bt.className='btns';bt.style.marginTop='4px';
+  const bo=document.createElement('button');bo.className=cur===r.id?'p':'';bo.textContent=cur===r.id?'در حال ویرایش':'باز کردن';bo.onclick=()=>openRec(r.id);
+  const bd=document.createElement('button');bd.textContent=delId===r.id?'مطمئنی؟ حذف':'حذف';bd.onclick=()=>del(r.id);
+  bt.appendChild(bo);bt.appendChild(bd);
+  mid.appendChild(t);mid.appendChild(l1);mid.appendChild(l2);mid.appendChild(bt);
+  row.appendChild(im);row.appendChild(mid);L.appendChild(row)});
+}
+window.arRender=renderAr;$('ar-q').addEventListener('input',renderAr);
+function fillRec(r){r.f=vals();r.d=dg();r.mc=mcs();r.ph=PHL.map(p=>({id:p.id,k:p.k}));r.ts=Date.now()}
+function hasC(){const f=vals();return PHL.length>0||F.some(x=>x[0]!=='hz'&&f[x[0]])||!!f.note}
+function autoKeep(){if(cur||!hasC())return false;const a=load(),r={id:'m'+Date.now()};fillRec(r);a.push(r);store(a);msg('پیش‌نویس قبلی در آرشیو ذخیره شد');return true}
+function stat(){const r=cur&&load().find(x=>x.id===cur);$('pl-state').textContent=r?'در حال ویرایش یک مورد آرشیو؛ تغییرها خودکار ذخیره می‌شود.':'پیش‌نویس جدید؛ هرچه می‌نویسید خودکار نگه داشته می‌شود. برای افزودن به آرشیو «ثبت در آرشیو» را بزنید.'}
+window.plSave=function(){const a=load();let r=a.find(x=>x.id===cur);
+ if(r)fillRec(r);else{r={id:'m'+Date.now()};fillRec(r);a.push(r);cur=r.id}
+ msg(store(a)?'در آرشیو ذخیره شد':'ذخیره نشد');renderAr();stat();chk(0)};
+window.plNew=function(){autoKeep();cur=null;delId=null;fill(null);$('pl_hz').value='50';PHL=[];renderPh();stat();renderAr();chk(0)};
+function openRec(id){autoKeep();const r=load().find(x=>x.id===id);if(!r)return;
+ cur=id;delId=null;fill(r.f);setDG(Object.assign({m:'a'},r.d||{}));MC=(r.mc||[]).map(c=>({...c}));sel=null;PHL=(r.ph||[]).map(p=>({...p}));
+ build();diag();renderPh();stat();renderAr();showTab('plate');chk(0)}
+function del(id){if(delId!==id){delId=id;renderAr();return}
+ store(load().filter(x=>x.id!==id));if(cur===id){cur=null;stat()}delId=null;renderAr();chk(0)}
+const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+window.plCSV=function(){
+ const f=vals(),rows=F.map(x=>[x[1],f[x[0]]]);rows.push(['توضیحات',f.note]);
+ rows.push(['شیار',$('z').value],['قطب',$('p').value],['تعداد مسیر',$('a').value],['گام',$('y').value||'کامل']);
+ dl('motor-'+(f.name||'plate').replace(/[^\w\u0600-\u06FF-]+/g,'_')+'.csv','text/csv','\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n'));
+};
+window.arCSV=function(){const a=load().sort((x,y)=>y.ts-x.ts);if(!a.length){msg('آرشیو خالی است');return}
+ const hd=F.map(x=>x[1]).concat(['توضیحات','شیار','قطب','تعداد مسیر','گام','تاریخ']);
+ const rows=[hd].concat(a.map(r=>{const d=r.d||{};return F.map(x=>r.f[x[0]]||'').concat([r.f.note||'',d.z||'',d.p||'',d.a||'',d.y||'کامل',new Date(r.ts).toLocaleDateString('fa-IR')])}));
+ dl('motors-archive.csv','text/csv','\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n'))};
+
+/* ---------- ذخیرهٔ خودکار + برگشت/جلو ---------- */
+let hist=[],hi=-1,cs='',tm=0;
+const gs=()=>({d:dg(),mc:mcs(),f:vals(),ph:PHL.map(p=>({id:p.id,k:p.k})),cur:cur});
+function persist(s){try{localStorage.setItem(DKEY,s)}catch(e){}
+ if(cur){const a=load(),r=a.find(x=>x.id===cur);if(r){fillRec(r);store(a)}else{cur=null;stat()}}}
+function ub(){$('bu').disabled=hi<=0;$('br').disabled=hi>=hist.length-1}
+function commit(){if(applying)return;const s=JSON.stringify(gs());if(s===cs)return;
+ hist.length=hi+1;hist.push(s);if(hist.length>100)hist.shift();hi=hist.length-1;cs=s;persist(s);ub()}
+function chk(ms){clearTimeout(tm);tm=setTimeout(commit,ms===undefined?400:ms)}
+function setState(s){applying=true;
+ try{setDG(s.d);MC=(s.mc||[]).map(c=>({...c}));sel=null;fill(s.f);PHL=(s.ph||[]).map(p=>({...p}));
+  cur=s.cur&&load().some(x=>x.id===s.cur)?s.cur:null;delId=null;
+  build();diag();renderPh();renderAr();stat()}
+ finally{applying=false}}
+function go(n){clearTimeout(tm);commit();const j=hi+n;if(j<0||j>=hist.length)return;hi=j;setState(JSON.parse(hist[hi]));cs=JSON.stringify(gs());hist[hi]=cs;persist(cs);ub()}
+window.undo=()=>go(-1);window.redo=()=>go(1);
+['input','change','click'].forEach(ev=>document.addEventListener(ev,()=>chk()));
+const flush=()=>{clearTimeout(tm);commit()};
+window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
+
+/* ---------- شروع ---------- */
+{let s0=null;try{s0=JSON.parse(localStorage.getItem(DKEY)||'null')}catch(e){}
+ if(s0&&s0.d)setState(s0);else{renderPh();renderAr();stat()}
+ cs=JSON.stringify(gs());hist=[cs];hi=0;ub();
+ if(!hasA()){try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+  idbThumbs().then(o=>{Object.keys(o).forEach(k=>{TC[k]=o[k]});renderPh();renderAr();
+   const ids=new Set(PHL.map(p=>p.id));load().forEach(r=>(r.ph||[]).forEach(p=>ids.add(p.id)));
+   return idbKeys().then(ks=>Promise.all(ks.filter(k=>!ids.has(String(k).slice(1))).map(k=>idbDel(k))))}).catch(()=>{})}
+ if(hasA()&&Android.gc){const ids=new Set(PHL.map(p=>p.id));load().forEach(r=>(r.ph||[]).forEach(p=>ids.add(p.id)));try{Android.gc(JSON.stringify([...ids]))}catch(e){}}}
+})();
+</script>
+<script>
+function tg(e){e.parentNode.classList.toggle('closed')}
+/* ---------- زوم دیاگرام‌ها ---------- */
+(function(){
+const BOX={sv:'svgbox',sv2:'cbox'},Z={sv:null,sv2:null};
+const clamp=z=>Math.min(5,Math.max(.15,z)),fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+function apply(k){const b=$(BOX[k]),w=b.firstElementChild;if(!w)return;
+ if(w.tagName.toLowerCase()==='svg'){const d=document.createElement('div');d.className='zw';b.replaceChild(d,w);d.appendChild(w);apply(k);return}
+ const s=w.firstElementChild;if(!s)return;const z=Z[k]==null?1:Z[k];
+ w.style.width=(+s.getAttribute('width')*z)+'px';w.style.height=(+s.getAttribute('height')*z)+'px';
+ const l=$('zl-'+k);if(l)l.textContent=fa(Math.round(z*100))+'٪'}
+function setZ(k,z){const b=$(BOX[k]);z=clamp(z);const old=Z[k]==null?1:Z[k];
+ const rtl=getComputedStyle(b).direction==='rtl',cw=b.clientWidth,sw=b.scrollWidth,sl=b.scrollLeft,c=(rtl?sl+sw-cw:sl)+cw/2;
+ Z[k]=z;apply(k);const sw2=b.scrollWidth;if(sw>cw+2&&sw2>cw){const L=c*sw2/sw-cw/2;b.scrollLeft=rtl?L-(sw2-cw):L}else b.scrollLeft=0}
+function fit(k,cap){const b=$(BOX[k]),s=b.querySelector('svg');if(!s||!b.clientWidth)return;
+ let z=(b.clientWidth-4)/+s.getAttribute('width');if(cap)z=Math.min(1,z);setZ(k,z)}
+window.zm=(k,d)=>setZ(k,(Z[k]==null?1:Z[k])*(d>0?1.25:.8));
+window.zset=(k,z)=>setZ(k,z);window.zfit=k=>fit(k,false);
+window.zinit=t=>{if(t==='flat'&&Z.sv==null)fit('sv',true);if(t==='circ'&&Z.sv2==null)fit('sv2',true)};
+Object.keys(BOX).forEach(k=>{const b=$(BOX[k]);
+ new MutationObserver(()=>apply(k)).observe(b,{childList:true});apply(k);
+ let d0=0,z0=1,raf=0,zt=1;const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+ b.addEventListener('touchstart',e=>{if(e.touches.length===2){d0=dist(e.touches);z0=Z[k]==null?1:Z[k];e.preventDefault()}},{passive:false});
+ b.addEventListener('touchmove',e=>{if(e.touches.length===2&&d0){e.preventDefault();zt=z0*dist(e.touches)/d0;if(!raf)raf=requestAnimationFrame(()=>{raf=0;setZ(k,zt)})}},{passive:false});
+ b.addEventListener('touchend',e=>{if(e.touches.length<2)d0=0});
+});
+})();
+function showTab(t){
+ document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t));
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ $('vbar').style.display=(t==='flat'||t==='circ')?'block':'none';
+ $('sum').style.display=(t==='plate'||t==='arch')?'none':'block';
+ window.scrollTo(0,0);
+ try{localStorage.setItem('winding_tab',t)}catch(e){}
+ if(window.zinit)zinit(t);
+ if(t==='arch'&&window.arRender)arRender();
+}
+(function(){let t='main';try{t=localStorage.getItem('winding_tab')||'main'}catch(e){}
+ if(!document.getElementById('p-'+t))t='main';showTab(t)})();
+</script>
+<script>if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){navigator.serviceWorker.register('sw.js').catch(function(){})}</script>
+</body></html>
